@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Навігація назад -->
+<a href="{{ url_for('home') }}" 
+   class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 group">
+  <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+  </svg>
+  На головну
+</a>
+
+<!-- Заголовок сторінки -->
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8">
+  <div class="flex items-start gap-4">
+    
+    <!-- Іконка статусу -->
+    {% if variant == 'danger' %}
+    <div class="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+      <svg class="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    {% else %}
+    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+      <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    </div>
+    {% endif %}
+    
+    <div>
+      <div class="flex items-center gap-3 mb-1">
+        <h2 class="text-2xl md:text-3xl font-bold text-white">{{ heading }}</h2>
+        {% if variant == 'danger' %}
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+          Небезпечно
+        </span>
+        {% else %}
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          Захищено
+        </span>
+        {% endif %}
+      </div>
+      <p class="text-slate-400 text-sm">{{ subtitle }}</p>
+      <p class="text-slate-500 text-sm mt-2 max-w-xl">{{ description }}</p>
+    </div>
+  </div>
+  
+  <!-- Підказка payload -->
+  <div class="code-block rounded-xl p-4 border border-slate-700/50 lg:min-w-[280px]">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs text-slate-500 uppercase tracking-wider">Тестовий payload</span>
+      {% if variant == 'danger' %}
+      <span class="text-xs text-red-400/70">⚠️ Спробуй</span>
+      {% else %}
+      <span class="text-xs text-emerald-400/70">✓ Безпечно</span>
+      {% endif %}
+    </div>
+    <code class="text-sm font-mono {% if variant == 'danger' %}text-red-300{% else %}text-emerald-300{% endif %} select-all">{{ payload_hint }}</code>
+  </div>
+</div>
+
+<!-- Форма пошуку -->
+<div class="glass border border-slate-700/50 rounded-2xl p-6 mb-6 {% if variant == 'danger' %}glow-danger{% else %}glow-safe{% endif %}">
+  <form action="{{ action_url }}" method="post" class="flex flex-col sm:flex-row gap-4 mb-6">
+    <div class="relative flex-1">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input 
+        type="text" 
+        name="query" 
+        placeholder="Введіть пошуковий запит або payload..." 
+        value="{{ query or '' }}"
+        class="w-full bg-slate-900/80 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3 
+               focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 
+               transition-all placeholder:text-slate-600"
+        autocomplete="off" 
+      />
+    </div>
+    <button 
+      type="submit"
+      class="{% if variant == 'danger' %}bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500{% else %}bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500{% endif %} 
+             text-white font-semibold px-8 py-3 rounded-xl transition-all shadow-lg 
+             {% if variant == 'danger' %}shadow-red-500/25 hover:shadow-red-500/40{% else %}shadow-emerald-500/25 hover:shadow-emerald-500/40{% endif %}
+             flex items-center justify-center gap-2"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      Пошук
+    </button>
+  </form>
+
+  <!-- SQL запит -->
+  <div class="code-block rounded-xl p-4 border border-slate-700/50 overflow-x-auto">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-xs text-slate-500 uppercase tracking-wider">Виконаний SQL</span>
+      {% if variant == 'danger' and query %}
+      <span class="px-2 py-0.5 text-xs rounded bg-red-500/10 text-red-400 border border-red-500/20">Потенційно небезпечний</span>
+      {% elif variant == 'safe' and query %}
+      <span class="px-2 py-0.5 text-xs rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Безпечний</span>
+      {% endif %}
+    </div>
+    <div class="flex items-start gap-2 font-mono text-sm">
+      <span class="text-indigo-400 select-none">$</span>
+      <code class="text-slate-300 break-all">{{ executed_sql }}</code>
+    </div>
+  </div>
+</div>
+
+<!-- Результати -->
+{% if results is not none %}
+<div class="glass border border-slate-700/50 rounded-2xl overflow-hidden">
+  
+  <!-- Заголовок результатів -->
+  <div class="px-6 py-4 border-b border-slate-700/50 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <h3 class="text-lg font-semibold text-white">Результати пошуку</h3>
+      <span class="px-3 py-1 text-xs font-semibold rounded-full 
+                   {% if results|length > 0 %}bg-indigo-500/10 text-indigo-400 border border-indigo-500/20{% else %}bg-slate-700/50 text-slate-400 border border-slate-600/50{% endif %}">
+        {{ results|length }} записів
+      </span>
+    </div>
+    
+    {% if variant == 'danger' and results|length > 1 and query %}
+    <div class="flex items-center gap-2 text-xs text-red-400">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span>Ін'єкція могла спрацювати!</span>
+    </div>
+    {% endif %}
+  </div>
+  
+  {% if results %}
+  <!-- Таблиця -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-sm">
+      <thead class="bg-slate-900/50">
+        <tr class="text-slate-400 text-xs uppercase tracking-wider">
+          <th class="px-6 py-4 font-semibold">ID</th>
+          <th class="px-6 py-4 font-semibold">Ім'я</th>
+          <th class="px-6 py-4 font-semibold">Дата народження</th>
+          <th class="px-6 py-4 font-semibold">Студентський</th>
+          <th class="px-6 py-4 font-semibold">Email</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800/50">
+        {% for row in results %}
+        <tr class="hover:bg-slate-800/30 transition-colors">
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">
+              {{ row[0] }}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="font-medium text-white">{{ row[1] }}</span>
+          </td>
+          <td class="px-6 py-4 text-slate-400">{{ row[2] }}</td>
+          <td class="px-6 py-4">
+            <code class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded font-mono">{{ row[3] }}</code>
+          </td>
+          <td class="px-6 py-4 text-slate-400">{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <!-- Порожній стан -->
+  <div class="py-16 text-center">
+    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800/50 flex items-center justify-center">
+      <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <p class="text-slate-500 mb-2">Записів не знайдено</p>
+    <p class="text-slate-600 text-sm">Спробуйте інший пошуковий запит</p>
+  </div>
+  {% endif %}
+  
+</div>
+{% endif %}
+
+<!-- Пояснення (тільки якщо є результати) -->
+{% if results is not none and results|length > 0 %}
+<div class="mt-6 glass border border-slate-700/50 rounded-2xl p-6">
+  <div class="flex items-start gap-4">
+    <div class="w-10 h-10 rounded-lg {% if variant == 'danger' %}bg-red-500/10 border-red-500/20{% else %}bg-emerald-500/10 border-emerald-500/20{% endif %} border flex items-center justify-center flex-shrink-0">
+      <svg class="w-5 h-5 {% if variant == 'danger' %}text-red-400{% else %}text-emerald-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    </div>
+    <div>
+      {% if variant == 'danger' %}
+      <h4 class="text-white font-semibold mb-2">Чому це небезпечно?</h4>
+      <p class="text-slate-400 text-sm leading-relaxed">
+        Payload <code class="text-red-300 bg-red-500/10 px-1.5 py-0.5 rounded">{{ payload_hint }}</code> змінює логіку SQL-запиту.
+        Умова <code class="text-red-300 bg-red-500/10 px-1.5 py-0.5 rounded">'1'='1'</code> завжди істинна, 
+        тому повертаються всі записи бази даних замість конкретного результату.
+      </p>
+      {% else %}
+      <h4 class="text-white font-semibold mb-2">Чому це безпечно?</h4>
+      <p class="text-slate-400 text-sm leading-relaxed">
+        При використанні параметризованих запитів, введення <code class="text-emerald-300 bg-emerald-500/10 px-1.5 py-0.5 rounded">{{ payload_hint }}</code>
+        обробляється як звичайний рядок для пошуку, а не як частина SQL-коду. 
+        База даних шукає буквальний текст, а не виконує ін'єкцію.
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
