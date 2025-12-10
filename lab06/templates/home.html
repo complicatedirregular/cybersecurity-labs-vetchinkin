@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Вступний блок -->
+<div class="text-center mb-10">
+  <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+    Дослідження <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">SQL-ін'єкцій</span>
+  </h2>
+  <p class="text-slate-400 max-w-2xl mx-auto leading-relaxed">
+    Інтерактивна демонстрація вразливостей та методів захисту від SQL-ін'єкцій. 
+    Порівняйте небезпечний та безпечний підходи до роботи з базами даних.
+  </p>
+</div>
+
+<!-- Картки -->
+<div class="grid md:grid-cols-2 gap-6">
+
+  <!-- Небезпечний пошук -->
+  <a href="{{ url_for('vulnerable') }}" class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    
+    <div class="relative glass border border-slate-700/50 rounded-2xl p-6 h-full group-hover:border-red-500/30 transition-all duration-300 glow-danger group-hover:glow-danger">
+      
+      <!-- Заголовок -->
+      <div class="flex items-start justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white group-hover:text-red-400 transition-colors">Уразливий пошук</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Конкатенація рядків</p>
+          </div>
+        </div>
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+          Небезпечно
+        </span>
+      </div>
+      
+      <!-- Опис -->
+      <p class="text-slate-400 text-sm leading-relaxed mb-6">
+        Демонстрація критичної вразливості. Введення користувача напряму вставляється в SQL-запит, 
+        що дозволяє зловмиснику змінити логіку запиту та отримати несанкціонований доступ до даних.
+      </p>
+      
+      <!-- Індикатори -->
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          Вразливий до атак
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Миттєвий ефект
+        </div>
+      </div>
+      
+      <!-- Payload hint -->
+      <div class="code-block rounded-xl p-4 border border-slate-700/50">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-slate-500 uppercase tracking-wider">Тестовий payload</span>
+          <span class="text-xs text-red-400/70">⚠️ Спробуй це</span>
+        </div>
+        <code class="text-sm font-mono text-red-300 select-all">{{ payload_hint }}</code>
+      </div>
+      
+      <!-- Стрілка -->
+      <div class="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </div>
+      
+    </div>
+  </a>
+
+  <!-- Безпечний пошук -->
+  <a href="{{ url_for('secure') }}" class="group relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    
+    <div class="relative glass border border-slate-700/50 rounded-2xl p-6 h-full group-hover:border-emerald-500/30 transition-all duration-300 group-hover:glow-safe">
+      
+      <!-- Заголовок -->
+      <div class="flex items-start justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Безпечний пошук</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Параметризовані запити</p>
+          </div>
+        </div>
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          Захищено
+        </span>
+      </div>
+      
+      <!-- Опис -->
+      <p class="text-slate-400 text-sm leading-relaxed mb-6">
+        Правильний підхід до безпеки. Параметри передаються окремо від SQL-коду через плейсхолдери, 
+        що унеможливлює виконання шкідливих SQL-конструкцій.
+      </p>
+      
+      <!-- Індикатори -->
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Захищено
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Найкращі практики
+        </div>
+      </div>
+      
+      <!-- Статус -->
+      <div class="code-block rounded-xl p-4 border border-slate-700/50">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-slate-500 uppercase tracking-wider">Статус захисту</span>
+          <span class="text-xs text-emerald-400/70">✓ Активний</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-sm font-mono text-emerald-300">Ін'єкція заблокована</span>
+        </div>
+      </div>
+      
+      <!-- Стрілка -->
+      <div class="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </div>
+      
+    </div>
+  </a>
+
+</div>
+
+<!-- Інформаційний блок -->
+<div class="mt-10 glass border border-slate-700/50 rounded-2xl p-6">
+  <div class="flex items-start gap-4">
+    <div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
+      <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-2">Як користуватися демонстрацією</h4>
+      <p class="text-slate-400 text-sm leading-relaxed">
+        Відкрийте кожну сторінку та введіть payload <code class="text-indigo-300 bg-indigo-500/10 px-1.5 py-0.5 rounded">{{ payload_hint }}</code> 
+        у поле пошуку. На уразливій сторінці ви побачите всі записи бази даних, 
+        а на безпечній — payload буде оброблено як звичайний текст.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
